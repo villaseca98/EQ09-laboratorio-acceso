@@ -1,0 +1,18 @@
+name: Pruebas EQ-09
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  autorizacion:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preparar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: curl
+      - name: Comprobar sintaxis
+        run: php -l router.php && php -l tests/autorizacion_test.php
+      - name: Ejecutar pruebas HTTP
+        run: php tests/autorizacion_test.php
