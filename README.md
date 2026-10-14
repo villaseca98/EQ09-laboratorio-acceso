@@ -1,25 +1,30 @@
-# EQ-09 · Comprobación de acceso por centro
+# EQ-09 · Explicar y repetir una comprobación de acceso
 
-Laboratorio **ficticio e independiente** para repetir una comprobación HTTP de autorización, sin datos reales ni dependencia del backend del equipo.
+**Laboratorio ficticio y aislado** para demostrar el cambio de autorización al modificar el centro asignado. No contiene datos reales ni es el backend compartido.
 
-- Cuenta de prueba: personal ficticio, activa, rol `administracion`.
-- Solicitud fija: `GET /personal/usuarios?centro=C01`.
-- C01 asignado → 200.
-- C01 retirado y C02 asignado → 403, sin datos protegidos.
-- C01 restaurado → 200.
-
-## Ejecutar en Mac
+## Ejecutar en macOS
 
 ```bash
+git pull
 php -S 127.0.0.1:8000 router.php
 ```
 
-Abrir `http://127.0.0.1:8000/panel`, usar los botones de asignación y fotografiar la **misma URL** antes y después.
+Abrir **http://127.0.0.1:8000/panel**.
 
-## Pruebas automáticas
+1. Pulsar **Asignar C01** y abrir **GET /centros/C01/configuracion**.
+2. Abrir **Desarrollo → Mostrar inspector web → Red**, recargar la pestaña de la petición, seleccionar `configuracion`: HTTP **200**.
+3. Volver al panel y pulsar **Retirar C01 y asignar C02**.
+4. Volver a la misma URL **/centros/C01/configuracion**, recargar y seleccionar `configuracion`: HTTP **403** sin `data`.
+5. Opcional: restaurar C01 y repetir (HTTP **200**).
+
+La **URL de la petición permanece idéntica**; cambia únicamente la asignación de la cuenta ficticia P10.
+
+## Test automatizado
 
 ```bash
-php tests/autorization_test.php
+php tests/autorizacion_test.php
 ```
 
-También se ejecutan en GitHub Actions. **Esta simulación no demuestra que la policy del backend del equipo esté implementada.**
+GitHub Actions también ejecuta el test. Las capturas son de Safari con el inspector **Red** y muestran la petición y el estado HTTP.
+
+**Límite:** esto prueba la simulación PHP local, no la policy Laravel real del equipo.
